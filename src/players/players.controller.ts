@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
-import { CreatePlayerDto } from './dtos/createPlayer.dto';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { CreatePlayerDto } from './dtos/create-player.dto';
+import { UpdatePlayerDto } from './dtos/update-player.dto';
 import { PlayersService } from './players.service';
 import { Player } from './interfaces/player.interface';
-import { PlayersParametersValidation } from './pipes/players-parameters-validation.pipe';
+import { ParametersValidation } from '../common/pipes/parameters-validation.pipe';
 
 @Controller('api/v1/players')
 export class PlayersController {
@@ -11,24 +12,33 @@ export class PlayersController {
 
     @Post()
     @UsePipes(ValidationPipe)
-    async CreateUpdatePlayer(
-        @Body() createPlayerDto: CreatePlayerDto) {
-        await this.playersService.createUpdatePlayer(createPlayerDto);
-    }
+    async CreatePlayer(
+        @Body() createPlayerDto: CreatePlayerDto): Promise<Player> {
+            return await this.playersService.createPlayer(createPlayerDto);
+        }
+
+    @Put('/:_id')
+    @UsePipes(ValidationPipe)
+    async UpdatePlayer(
+        @Body() updatePlayerDto: UpdatePlayerDto,
+        @Param('_id', ParametersValidation) _id: string): Promise<void> {
+            await this.playersService.updatePlayer(_id, updatePlayerDto);
+        }
 
     @Get()
-    async GetAllPlayers(
-        @Query('email', PlayersParametersValidation) email: string): Promise<Player[] | Player> {
-            if (email) {
-                return await this.playersService.getPlayerByEmail(email);
-            } else {
-                return await this.playersService.getAllPlayers();
-            }
+    async GetAllPlayers(): Promise<Player[]> {
+        return await this.playersService.getAllPlayers();
     }
 
-    @Delete()
+    @Get('/:_id')
+    async GetPlayerById(
+        @Param('_id', ParametersValidation) _id: string): Promise<Player> {
+            return await this.playersService.getPlayerById(_id);
+        }
+
+    @Delete('/:_id')
     async DeletePlayer(
-        @Query('email', PlayersParametersValidation) email: string): Promise<void> {
-            await this.playersService.deletePlayer(email);
-    }
+        @Param('_id', ParametersValidation) _id: string): Promise<void> {
+            await this.playersService.deletePlayer(_id);
+        }
 }

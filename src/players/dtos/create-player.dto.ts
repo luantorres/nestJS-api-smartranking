@@ -4,9 +4,9 @@ export class CreatePlayerDto {
     @IsNotEmpty()
     readonly name: string;
 
-    @IsEmail()
+    @IsNotEmpty()
     readonly cellPhone: string;
 
-    @IsNotEmpty()
+    @IsEmail()
     readonly email: string;
 }

@@ -1,8 +1,9 @@
 import * as mongoose from 'mongoose';
 
 export const PlayerSchema = new mongoose.Schema({
-    cellPhone: { type: String, unique: true },
     email: { type: String, unique: true },
+    name: { type: String },
+    cellPhone: { type: String },
     ranking: String,
     rankingPosition: Number,
     urlPlayerPhoto: String
